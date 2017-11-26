@@ -48,13 +48,9 @@ public partial class _Default : System.Web.UI.Page
         string email = emailTxt.Text;
         string confirmEmail = confirmEmailTxt.Text;
         if (confirmEmail == email)
-        {
             return true;
-        }
         else if (confirmPassword == password)
-        {
             return true;
-        }
         else 
             return false;
     }
@@ -69,50 +65,50 @@ public partial class _Default : System.Web.UI.Page
 
         foreach (char c in firstName)
         {
-            if (IsValid(c))
+            if (!IsValid(c))
             {
-                return true;
+                return false;
             }
         }
 
         foreach (char c in lastName)
         {
-            if (IsValid(c))
+            if (!IsValid(c))
             {
-                return true;
+                return false;
             }
         }
-
+ 
         foreach (char c in userName)
         {
-            if (IsValid(c))
+            if (!IsValid(c))
             {
-                return true;
+                return false;
             }
         }
 
         foreach (char c in password)
         {
-            if (IsValid(c))
+            if (!IsValid(c))
             {
-                return true;
+                return false;
             }
         }
 
         foreach (char c in email)
         {
-            if (isValidEmail(c))
+            if (!isValidEmail(c))
             {
-                if (email.Contains("@"))
+                if (!email.Contains("@"))
                 {
-                    if (email.Contains(".com") || email.Contains(".edu") || email.Contains(".org"))
+                    if (!email.Contains(".com") && !email.Contains(".edu") && !email.Contains(".org"))
                     {
-                        return true;
+                        return false;
                     }
                 }
             }
         }
-        return false;
+        return true;
     }
 
     public bool confirmEmailTester()
@@ -120,19 +116,19 @@ public partial class _Default : System.Web.UI.Page
         string confirmEmail = confirmEmailTxt.Text;
         foreach (char c in confirmEmail)
         {
-            if (isValidEmail(c))
+            if (!isValidEmail(c))
             {
-                if (confirmEmail.Contains("@"))
+                if (!confirmEmail.Contains("@"))
                 {
-                    if (confirmEmail.Contains(".com") || confirmEmail.Contains(".edu") || confirmEmail.Contains(".org"))
+                    if (!confirmEmail.Contains(".com") && !confirmEmail.Contains(".edu") && !confirmEmail.Contains(".org"))
                     {
-                        return true;
+                        return false;
                     }
                 }
             }
             
         }
-        return false;
+        return true;
     }
 
     public bool confirmPasswordTester()
@@ -154,6 +150,7 @@ public partial class _Default : System.Web.UI.Page
     {
         // need to add test to see if any usernames are already taken in db
         // should add encryption
+        profileTester();
         confirmEmailTester();
         samePasswordAndEmail();
         if(confirmEmailTester() == false || samePasswordAndEmail() == false 
