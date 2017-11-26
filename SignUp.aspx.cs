@@ -14,6 +14,7 @@ public partial class _Default : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         firstNameTxt.Focus();
+        errorLbl.Visible = false;
     }
 
     public bool IsValid(char value)
@@ -57,54 +58,47 @@ public partial class _Default : System.Web.UI.Page
         else 
             return false;
     }
-    public bool firstNameTester()
+
+    public bool profileTester()
     {
         string firstName = firstNameTxt.Text;
+        string lastName = lastNameTxt.Text;
+        string userName = userNameTxt.Text;
+        string password = passWordTxt.Text;
+        string email = emailTxt.Text;
+
         foreach (char c in firstName)
         {
             if (IsValid(c))
             {
-
+                return true;
             }
-            else
-                return false;
         }
-        return true;
-    }
 
-    public bool lastNameTester()
-    {
-        string lastname = lastNameTxt.Text;
-        foreach (char c in lastname)
+        foreach (char c in lastName)
         {
             if (IsValid(c))
             {
-
+                return true;
             }
-            else
-                return false;
         }
-        return true;
-    }
 
-    public bool userNameTester()
-    {
-        string username = userNameTxt.Text;
-        foreach (char c in username)
+        foreach (char c in userName)
         {
             if (IsValid(c))
             {
-
+                return true;
             }
-            else
-                return false;
         }
-        return true;
-    }
 
-    public bool emailTester()
-    {
-        string email = emailTxt.Text;
+        foreach (char c in password)
+        {
+            if (IsValid(c))
+            {
+                return true;
+            }
+        }
+
         foreach (char c in email)
         {
             if (isValidEmail(c))
@@ -117,7 +111,6 @@ public partial class _Default : System.Web.UI.Page
                     }
                 }
             }
-            
         }
         return false;
     }
@@ -149,49 +142,27 @@ public partial class _Default : System.Web.UI.Page
         {
             if (IsValid(c))
             {
-
+                return true;
             }
-            else
-                return false;
         }
-        return true;
+        return false;
     }
 
-    public bool passWordTester()
-    {
-        string password = passWordTxt.Text;
-        foreach (char c in password)
-        {
-            if (IsValid(c))
-            {
-
-            }
-            else
-                return false;
-        }
-        return true;
-    }
 
 
     public void submit(object sender, EventArgs e)
     {
         // need to add test to see if any usernames are already taken in db
         // should add encryption
-        firstNameTester();
-        lastNameTester();
-        userNameTester();
-        emailTester();
         confirmEmailTester();
-        passWordTester();
         samePasswordAndEmail();
-        if(firstNameTester() == false || lastNameTester() == false 
-           || userNameTester() == false || emailTester() == false 
-           || confirmEmailTester() == false || passWordTester() == false
-           || samePasswordAndEmail() == false || firstNameTxt.Text.Length < 1
+        if(confirmEmailTester() == false || samePasswordAndEmail() == false 
+           || profileTester() == false || firstNameTxt.Text.Length < 1
            || lastNameTxt.Text.Length < 1 || emailTxt.Text.Length < 1 
            || userNameTxt.Text.Length < 1 || confirmEmailTxt.Text.Length < 1
            || passWordTxt.Text.Length < 1)
         {
+            errorLbl.Visible = true;
             errorLbl.Text = "Please enter the correct information";
         }
         else
