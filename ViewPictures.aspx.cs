@@ -26,12 +26,21 @@ public partial class _Default : System.Web.UI.Page
 
     private const int DerivationIterations = 1000;
 
+    private ImageList imageList1 = new ImageList();
+    
+
     protected void Page_Load(object sender, EventArgs e)
     {
         // Session.Add["password"];
-        
-        ImageList imageList1 = new ImageList();
+
+        SqlConnection con = new SqlConnection(ConnectionString);
+        con.Open();
+        SqlCommand passCmd = new SqlCommand("Select Password FROM Users Where UserName = " + User.Identity.Name, con);
+        string password = passCmd.Parameters.ToString();
+        con.Close();
+
         imageList1.ImageSize = new Size(100, 100);
+
         using (SqlConnection conn = new SqlConnection(ConnectionString))
         {
             SqlCommand cmd = new SqlCommand("Select Images FROM Images where Images = @Images", conn);
@@ -40,9 +49,12 @@ public partial class _Default : System.Web.UI.Page
             {
                 while(imgReader.Read())
                 {
-
-                    imageList1.Images.Add("@Images".);
+                    string cipherText = imgReader[0].ToString();
+                    string decryptedImgs = Decrypt(cipherText , password);
+                    byte[] images = System.Text.Encoding.UTF8.GetBytes(decryptedImgs);
+                   // imageList1.Images.Add(byteArrayToImage(images));
                 }
+            
             }
         }    
     }
@@ -52,7 +64,7 @@ public partial class _Default : System.Web.UI.Page
             
             SqlConnection conn = new SqlConnection(ConnectionString);
             conn.Open();
-            SqlCommand getPassword = new SqlCommand("Select Password")
+            SqlCommand getPassword = new SqlCommand("Select Password from Users Where @Password=password");
 
             // Get the complete stream of bytes that represent:
             // [32 bytes of Salt] + [32 bytes of IV] + [n bytes of CipherText]
@@ -89,8 +101,11 @@ public partial class _Default : System.Web.UI.Page
                 }
             }
         }
-    }
-}
 
-    
+    public Image byteArrayToImage(byte[] byteArrayIn)
+    {
+        MemoryStream ms = new MemoryStream(byteArrayIn);
+        Image returnImage = Image.FromStream(ms);
+        return returnImage;
+    }
 }

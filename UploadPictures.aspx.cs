@@ -24,14 +24,14 @@ public partial class _Default : System.Web.UI.Page
 
     private const int DerivationIterations = 1000;
 
-    public static byte[] Encrypt(string plainText, string passPhrase)
+    public static string Encrypt(string plainText, string passPhrase)
     {
 
         var salt = Generate256BitsOfRandomEntropy();
         var iv = Generate256BitsOfRandomEntropy();
         var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
 
-        using(var password = new Rfc2898DeriveBytes(passPhrase, salt, DerivationIterations))
+        using (var password = new Rfc2898DeriveBytes(passPhrase, salt, DerivationIterations))
         {
             var keyBytes = password.GetBytes(keySize / 8);
             using (var symmetricKey = new RijndaelManaged())
@@ -39,7 +39,7 @@ public partial class _Default : System.Web.UI.Page
                 symmetricKey.BlockSize = 256;
                 symmetricKey.Mode = CipherMode.CBC;
                 symmetricKey.Padding = PaddingMode.PKCS7;
-                using(var encryptor = symmetricKey.CreateEncryptor(keyBytes, iv))
+                using (var encryptor = symmetricKey.CreateEncryptor(keyBytes, iv))
                 {
                     using (MemoryStream ms = new MemoryStream())
                     {
@@ -52,7 +52,7 @@ public partial class _Default : System.Web.UI.Page
                             cipherTextBytes = cipherTextBytes.Concat(ms.ToArray()).ToArray();
                             ms.Close();
                             cs.Close();
-                            return cipherTextBytes;
+                            return Encoding.UTF8.GetString(cipherTextBytes);
                         }
                     }
                 }
@@ -68,7 +68,7 @@ public partial class _Default : System.Web.UI.Page
     private static byte[] Generate256BitsOfRandomEntropy()
     {
         var randomBytes = new byte[32];
-        using(var rngCsp = new RNGCryptoServiceProvider())
+        using (var rngCsp = new RNGCryptoServiceProvider())
         {
             rngCsp.GetBytes(randomBytes);
         }
@@ -84,25 +84,24 @@ public partial class _Default : System.Web.UI.Page
         string password = getPassCmd.Parameters.ToString();
         con.Close();
         string fileName;
-        
+
         if (picFile.HasFile)
         {
             fileName = picFile.PostedFile.FileName;
             using (Aes encrpytion = Aes.Create())
             {
-                
+
                 string image = ImageToString(fileName);
-                byte [] encyptedImage = Encrypt(image, password);
+                string encyptedImage = Encrypt(image, password);
                 con.Open();
                 SqlCommand cmd = new SqlCommand("Insert Into Images values (@Images)", con);
                 cmd.Parameters.AddWithValue("@Images", encyptedImage);
                 cmd.ExecuteNonQuery();
                 con.Close();
-           }
+            }
         }
 
         else
-
         {
             result.Visible = true;
             result.Text = "Please upload an image!";
@@ -124,7 +123,7 @@ public partial class _Default : System.Web.UI.Page
             }
         }
     }
-     
+
     public void submitButton(object sender, EventArgs e)
     {
         uploadPicture();
