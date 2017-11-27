@@ -7,7 +7,13 @@
     <title>PhotoSec</title>
 </head>
 <body>
-    <h1>Your Pictures</h1>
+    <form runat="server">
+    <div style="float:left">
+        <img src="C:\Users\Brett\Pictures\animatedlock.jpg" width="50" height="50"/>
+    </div>
+    <div style="display:inline-block">
+        <h1>Your Pictures</h1>
+    </div>
     <div align="right">
         Sort By: 
         <select>
@@ -38,16 +44,22 @@
 		-Size
 	</div>
 	</br>
-	<div align="right">
-		Show 
-		<select>
-			<option value="10">10</option>
-			<option value="20">20</option>
-			<option value="30">30</option>
-			<option value="40">40</option>
-			<option value="50">50</option>
-		</select>
-		Per page
+	<div style="display:inline" >
+        <div style="float: left; width:45%">
+            <asp:Button id="UploadedFiles" runat="server" Text="Upload Pictures" />
+        </div>
+        <div style="float: right; width: 10%;">
+		    Show 
+		    <select>
+			    <option value="10">10</option>
+			    <option value="20">20</option>
+			    <option value="30">30</option>
+			    <option value="40">40</option>
+			    <option value="50">50</option>
+		    </select>
+		    Per page
+        </div>
 	</div>
+    </form>
 </body>
 </html>

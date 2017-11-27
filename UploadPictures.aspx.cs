@@ -20,91 +20,79 @@ public partial class _Default : System.Web.UI.Page
 
     private static string connectionstring = "Data Source=BRETTSPC\\SQLEXPRESS;Initial Catalog=PhotoSec;Integrated Security=True";
 
+    private const int keySize = 256;
+
+    private const int DerivationIterations = 1000;
+
+    public static byte[] Encrypt(string plainText, string passPhrase)
+    {
+
+        var salt = Generate256BitsOfRandomEntropy();
+        var iv = Generate256BitsOfRandomEntropy();
+        var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+
+        using(var password = new Rfc2898DeriveBytes(passPhrase, salt, DerivationIterations))
+        {
+            var keyBytes = password.GetBytes(keySize / 8);
+            using (var symmetricKey = new RijndaelManaged())
+            {
+                symmetricKey.BlockSize = 256;
+                symmetricKey.Mode = CipherMode.CBC;
+                symmetricKey.Padding = PaddingMode.PKCS7;
+                using(var encryptor = symmetricKey.CreateEncryptor(keyBytes, iv))
+                {
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                        {
+                            cs.Write(plainTextBytes, 0, plainText.Length);
+                            cs.FlushFinalBlock();
+                            var cipherTextBytes = salt;
+                            cipherTextBytes = cipherTextBytes.Concat(iv).ToArray();
+                            cipherTextBytes = cipherTextBytes.Concat(ms.ToArray()).ToArray();
+                            ms.Close();
+                            cs.Close();
+                            return cipherTextBytes;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         result.Visible = false;
     }
-   
-    public static byte[] GetRandomBytes()
-    {
-        int saltLength = GetSaltLength();
-        byte[] ba = new byte[saltLength];
-        RNGCryptoServiceProvider.Create().GetBytes(ba);
-        return ba;
-    }
 
-    public static int GetSaltLength()
+    private static byte[] Generate256BitsOfRandomEntropy()
     {
-        return 8;
-    }
-    
-    /*
-    static byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key,byte[] IV)
-    {
-        // Check arguments.
-        if (plainText == null || plainText.Length <= 0)
-            throw new ArgumentNullException("plainText");
-        if (Key == null || Key.Length <= 0)
-            throw new ArgumentNullException("Key");
-        if (IV == null || IV.Length <= 0)
-            throw new ArgumentNullException("IV");
-        byte[] encrypted;
-        // Create an Aes object
-        // with the specified key and IV.
-        using (Aes aesAlg = Aes.Create())
+        var randomBytes = new byte[32];
+        using(var rngCsp = new RNGCryptoServiceProvider())
         {
-            aesAlg.Key = Key;
-            aesAlg.IV = IV;
-
-            // Create a decrytor to perform the stream transform.
-            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-
-            // Create the streams used for encryption.
-            using (MemoryStream msEncrypt = new MemoryStream())
-            {
-                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                {
-                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
-                    {
-
-                        //Write all data to the stream.
-                        swEncrypt.Write(plainText);
-                    }
-                    encrypted = msEncrypt.ToArray();
-                }
-            }
+            rngCsp.GetBytes(randomBytes);
         }
-        // Return the encrypted bytes from the memory stream.
-        return encrypted;
-
-    }
-    */
-
-    public static byte[] EncryptBytesOfPicture(byte[] input)
-    {
-        Rfc2898DeriveBytes rfc = new Rfc2898DeriveBytes("bwarner159", GetRandomBytes());
-        MemoryStream ms = new MemoryStream();
-        AesManaged aes = new AesManaged();
-        aes.Key = rfc.GetBytes(aes.KeySize / 8);
-        aes.IV = rfc.GetBytes(aes.BlockSize / 8);
-        CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
-        cs.Write(input, 0, input.Length);
-        cs.Close();
-        return ms.ToArray();
+        return randomBytes;
     }
 
     public void uploadPicture()
     {
-        string fileName;
+        //insert sql query to get users password for string passPhrase from Encrypt method
         SqlConnection con = new SqlConnection(connectionstring);
+        con.Open();
+        SqlCommand getPassCmd = new SqlCommand("Select Password FROM Users Where UserName = " + User.Identity.Name, con);
+        string password = getPassCmd.Parameters.ToString();
+        con.Close();
+        string fileName;
+        
         if (picFile.HasFile)
         {
             fileName = picFile.PostedFile.FileName;
             using (Aes encrpytion = Aes.Create())
             {
                 
-                byte[] image = ImageToStream(fileName);
-                byte [] encyptedImage = EncryptBytesOfPicture(image);
+                string image = ImageToString(fileName);
+                byte [] encyptedImage = Encrypt(image, password);
                 con.Open();
                 SqlCommand cmd = new SqlCommand("Insert Into Images values (@Images)", con);
                 cmd.Parameters.AddWithValue("@Images", encyptedImage);
@@ -121,22 +109,22 @@ public partial class _Default : System.Web.UI.Page
         }
     }
 
-    private byte[] ImageToStream(string FileName) {
-        MemoryStream ms = new MemoryStream();
-        tryagain:
-        try
+
+    private string ImageToString(string file)
+    {
+        using (System.Drawing.Image image = System.Drawing.Image.FromFile(picFile.PostedFile.FileName))
         {
-            Bitmap image = new Bitmap(FileName);
-            image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                image.Save(ms, image.RawFormat);
+                byte[] imageBytes = ms.ToArray();
+
+                string base64string = Convert.ToBase64String(imageBytes);
+                return base64string;
+            }
         }
-        catch(Exception ex)
-        {
-            goto tryagain;
-        }
-        return ms.ToArray();
     }
      
-
     public void submitButton(object sender, EventArgs e)
     {
         uploadPicture();

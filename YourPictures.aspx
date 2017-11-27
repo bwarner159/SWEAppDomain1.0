@@ -8,18 +8,23 @@
 </head>
 <body>
     <form id="form1" runat="server">
+    <div style="float:left">
+        <img src="C:\Users\Brett\Pictures\animatedlock.jpg" width="50" height="50"/>
+    </div>
+    <div style="display:inline-block">
+        <h1>Your Pictures</h1>
+    </div>
     <div>
-    <h1>Your Pictures</h1>
 	<div>
-		<img src="blah">
+		<img id="picture" src="C:\Users\Brett\Pictures\petland.jpg" />
 		-FileName </br>
 		-Date </br>
 		-Size		
 	</div>
 	</br>
 	<div>
-        <asp:Button ID="Button1" runat="server" Text="Download" />
-        <asp:Button ID="Button2" runat="server" Text="Delete" />
+        <asp:Button ID="downloadButton" runat="server" Text="Download" OnClick="DownloadPicture" />
+        <asp:Button ID="deleteButton" runat="server" Text="Delete" />
 	</div>
     </div>
     </form>
