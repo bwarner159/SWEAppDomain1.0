@@ -21,6 +21,7 @@
         <asp:Panel ID="confirmation" runat="server" Visible="false">         
             <asp:Label ID="result" runat="server"></asp:Label>
         </asp:Panel>
+        <asp:Button ID ="goToViewPics" runat="server" Text="Go to View Pictures Page" OnClick="GoToViewPictures"/>
     </div>
     </form>
 </body>

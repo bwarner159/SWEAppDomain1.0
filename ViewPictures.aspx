@@ -14,51 +14,15 @@
     <div style="display:inline-block">
         <h1>Your Pictures</h1>
     </div>
-    <div align="right">
-        Sort By: 
-        <select>
-            <option value="size">Size</option>
-            <option value="date">Date</option>
-            <option value="name">Name</option>
-        </select>
-        </br>
+    <div>
+        <asp:Button runat="server" ID="goToUploadPg" Text="Go to Upload Page" OnClick="GoToUpload"/>
     </div>
     <div>
-		<img src="">
-		-FileName</br>
-		-Date</br>
-		-Size
-	</div>
-	</br>
-	<div>
-		<img src="">
-		-FileName </br>
-		-Date </br>
-		-Size
-	</div>
-	</br>
-	<div>
-		<img src="">
-		-FileName</br>
-		-Date</br>
-		-Size
-	</div>
-	</br>
-	<div style="display:inline" >
-        <div style="float: left; width:45%">
-            <asp:Button id="UploadedFiles" runat="server" Text="Upload Pictures" />
-        </div>
-        <div style="float: right; width: 10%;">
-		    Show 
-		    <select>
-			    <option value="10">10</option>
-			    <option value="20">20</option>
-			    <option value="30">30</option>
-			    <option value="40">40</option>
-			    <option value="50">50</option>
-		    </select>
-		    Per page
-        </div>
+        <asp:Image runat="server" ID="Id1" ImageUrl="ViewPictures.aspx.cs?Id=1"/>
+        <asp:Image runat="server" ID="Id2" ImageUrl="ViewPictures.aspx.cs?Id=2"/>
+        <asp:Image runat="server" ID="Id3" ImageUrl="ViewPictures.aspx.cs?Id=3"/>
+        <asp:Image runat="server" ID="Id4" ImageUrl="ViewPictures.aspx.cs?Id=4"/>
+        <asp:Image runat="server" ID="Id5" ImageUrl="ViewPictures.aspx.cs?Id=5"/>
 	</div>
     </form>
 </body>

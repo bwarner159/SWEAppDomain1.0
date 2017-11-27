@@ -63,6 +63,10 @@ public partial class _Default : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         result.Visible = false;
+        if (Session["UserID"] != null)
+        {
+            int sessionValue = Convert.ToInt32(Session["UserID"]);
+        }
     }
 
     private static byte[] Generate256BitsOfRandomEntropy()
@@ -80,7 +84,7 @@ public partial class _Default : System.Web.UI.Page
         //insert sql query to get users password for string passPhrase from Encrypt method
         SqlConnection con = new SqlConnection(connectionstring);
         con.Open();
-        SqlCommand getPassCmd = new SqlCommand("Select Password FROM Users Where UserName = " + User.Identity.Name, con);
+        SqlCommand getPassCmd = new SqlCommand("Select Password FROM Users Where UserID = " + Session["UserID"], con);
         string password = getPassCmd.Parameters.ToString();
         con.Close();
         string fileName;
@@ -88,7 +92,7 @@ public partial class _Default : System.Web.UI.Page
         if (picFile.HasFile)
         {
             fileName = picFile.PostedFile.FileName;
-            using (Aes encrpytion = Aes.Create())
+            using (Rijndael encryption = RijndaelManaged.Create())
             {
 
                 string image = ImageToString(fileName);
@@ -128,6 +132,10 @@ public partial class _Default : System.Web.UI.Page
     {
         uploadPicture();
         result.Visible = true;
-        // Server.Transfer("ViewPictures.aspx", true);
+    }
+
+    public void GoToViewPictures(object sender, EventArgs e)
+    {
+        Response.Redirect("ViewPictures.aspx" + Session["UserID"]);
     }
 }
