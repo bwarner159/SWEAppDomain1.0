@@ -15,16 +15,16 @@
         <h1>Your Pictures</h1>
     </div>
     <div>
-	<div>
-		<img id="picture" src="C:\Users\Brett\Pictures\petland.jpg" />
-		-FileName </br>
-		-Date </br>
-		-Size		
-	</div>
 	</br>
 	<div>
+        <asp:TextBox ID="downloadTxt" runat="server" ></asp:TextBox>
         <asp:Button ID="downloadButton" runat="server" Text="Download" OnClick="DownloadPicture" />
-        <asp:Button ID="deleteButton" runat="server" Text="Delete" />
+    </div>
+    <div>
+        <asp:TextBox ID="deleteTxt" runat="server" ></asp:TextBox>
+        <asp:Button ID="deleteButton" runat="server" Text="Delete" Width="107px" OnClick="DeletePicture" /></br>
+        <asp:Label ID="downloadLbl" runat="server"></asp:Label>
+        <asp:Label ID="deleteLbl" runat="server"></asp:Label>
 	</div>
     </div>
     </form>

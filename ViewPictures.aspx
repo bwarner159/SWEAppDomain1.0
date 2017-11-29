@@ -21,7 +21,8 @@
         </br>
     </div>
     <div>
-        <asp:Button ID="ViewPicturesButton" runat="server" OnClick="viewPicturesButton"/>
+        <asp:Button ID="ViewPicturesButton" runat="server" OnClick="viewPicturesButton" Text="View Your Pictures"/>
+        <asp:Button ID="YourPicturesButton" runat="server" OnClick="GoToYourPictures" Text="Your Pictures"/>
     </div>
     <div>
         <asp:Image runat="server" ID="Id1" ImageUrl="ImageHandler.ashx?Id={1}"/>

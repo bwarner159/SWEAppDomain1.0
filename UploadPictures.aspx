@@ -1,4 +1,4 @@
-﻿ <%@ Page Language="C#" AutoEventWireup="true" CodeFile="UploadPictures.aspx.cs" Inherits="_Default" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="UploadPictures.aspx.cs" Inherits="_Default" %>
 
 <!DOCTYPE html>
 
@@ -6,7 +6,7 @@
 <head runat="server">
     <title>PhotoSec</title>
 </head>
-<body style="background:url(C:\Users\bwarner6\Downloads\spirationlight\spiration-light.png)">
+<body style="background:url(C:\Users\Brett\Pictures\backgroundImg.jpg)">
     <form id="form1" runat="server">
     <div style="float:left">
         <img src="C:\Users\Brett\Pictures\animatedlock.jpg" width="50" height="50"/>
@@ -19,10 +19,10 @@
         <asp:FileUpload ID="picFile" runat="server" />
     </div>
     <div>
-        <asp:Button ID="submitPicture" runat="server" Text="Submit" OnClick="submitButton"/>
-        <asp:Panel ID="confirmation" runat="server" Visible="false">         
-            <asp:Label ID="result" runat="server"></asp:Label>
-        </asp:Panel>
+        <asp:Button ID="submitPicture" runat="server" Text="Submit" OnClick="submitButton"/> </br>     
+            <asp:Label ID="result" runat="server"></asp:Label></br>
+        <asp:Button ID="goToViewPics" runat="server" Text="View Pictures" OnClick="GoToViewPictures"/>
+        
     </div>
     </form>
 </body>
