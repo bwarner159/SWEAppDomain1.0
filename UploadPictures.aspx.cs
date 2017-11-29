@@ -24,12 +24,14 @@ public partial class _Default : System.Web.UI.Page
 
     private const int DerivationIterations = 1000;
 
-    public static string Encrypt(string plainText, string passPhrase)
+    
+
+    public static byte[] Encrypt(byte[] plainText, string passPhrase)
     {
 
         var salt = Generate256BitsOfRandomEntropy();
         var iv = Generate256BitsOfRandomEntropy();
-        var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+        var plainTextBytes = plainText;
 
         using (var password = new Rfc2898DeriveBytes(passPhrase, salt, DerivationIterations))
         {
@@ -52,7 +54,7 @@ public partial class _Default : System.Web.UI.Page
                             cipherTextBytes = cipherTextBytes.Concat(ms.ToArray()).ToArray();
                             ms.Close();
                             cs.Close();
-                            return Encoding.UTF8.GetString(cipherTextBytes);
+                            return cipherTextBytes;
                         }
                     }
                 }
@@ -63,10 +65,7 @@ public partial class _Default : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         result.Visible = false;
-        if (Session["UserID"] != null)
-        {
-            int sessionValue = Convert.ToInt32(Session["UserID"]);
-        }
+        int userID = (int)Session["UserID"];
     }
 
     private static byte[] Generate256BitsOfRandomEntropy()
@@ -95,11 +94,12 @@ public partial class _Default : System.Web.UI.Page
             using (Rijndael encryption = RijndaelManaged.Create())
             {
 
-                string image = ImageToString(fileName);
-                string encyptedImage = Encrypt(image, password);
+                byte[] image = ImageToBytes(fileName);
+                byte[] encyptedImage = Encrypt(image, password);
                 con.Open();
-                SqlCommand cmd = new SqlCommand("Insert Into Images values (@Images)", con);
+                SqlCommand cmd = new SqlCommand("Insert Into Images values (@Images, @UserID)", con);
                 cmd.Parameters.AddWithValue("@Images", encyptedImage);
+                cmd.Parameters.AddWithValue("@UserID", Session["UserID"]);
                 cmd.ExecuteNonQuery();
                 con.Close();
             }
@@ -113,7 +113,7 @@ public partial class _Default : System.Web.UI.Page
     }
 
 
-    private string ImageToString(string file)
+    private byte [] ImageToBytes(string file)
     {
         using (System.Drawing.Image image = System.Drawing.Image.FromFile(picFile.PostedFile.FileName))
         {
@@ -122,8 +122,7 @@ public partial class _Default : System.Web.UI.Page
                 image.Save(ms, image.RawFormat);
                 byte[] imageBytes = ms.ToArray();
 
-                string base64string = Convert.ToBase64String(imageBytes);
-                return base64string;
+                return imageBytes;
             }
         }
     }
@@ -136,6 +135,6 @@ public partial class _Default : System.Web.UI.Page
 
     public void GoToViewPictures(object sender, EventArgs e)
     {
-        Response.Redirect("ViewPictures.aspx" + Session["UserID"]);
+        Response.Redirect("ViewPictures.aspx");
     }
 }

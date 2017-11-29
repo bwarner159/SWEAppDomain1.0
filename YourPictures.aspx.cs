@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.IO;
+using System.Net;
 
 public partial class _Default : System.Web.UI.Page
 {
@@ -17,57 +18,23 @@ public partial class _Default : System.Web.UI.Page
         //Will allow user to see image that they are downloading or deleting
     }
 
-    public static byte[] GetRandomBytes()
-    {
-        int saltLength = GetSaltLength();
-        byte[] ba = new byte[saltLength];
-        RNGCryptoServiceProvider.Create().GetBytes(ba);
-        return ba;
-    }
-
-    public static int GetSaltLength()
-    {
-        return 8;
-    }
-
-    public static byte[] Decrypt(byte[] input)
-    {
-        Rfc2898DeriveBytes rfc =
-          new Rfc2898DeriveBytes("bwarner159", GetRandomBytes()); // Change this
-        MemoryStream ms = new MemoryStream();
-        Aes aes = new AesManaged();
-        aes.Key = rfc.GetBytes(aes.KeySize / 8);
-        aes.IV = rfc.GetBytes(aes.BlockSize / 8);
-        CryptoStream cs = new CryptoStream(ms,
-          aes.CreateDecryptor(), CryptoStreamMode.Write);
-        cs.Write(input, 0, input.Length);
-        cs.Close();
-        return ms.ToArray();
-    }
-
     protected void DownloadPicture(object sender, EventArgs e)
     {
-        string filePath = "C:\\Users\\Brett\\Pictures\\petland.jpg";
-
-        Bitmap bitmap = new Bitmap(filePath);
-        bitmap.Save("C:\\Users\\Brett\\Pictures\\Camera Roll\\petland.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
-        bitmap.Dispose();
+        
     }
+    /*
+    public void SaveImage(string filename, ImageFormat imgFormat) 
+    {
+        WebClient client = new WebClient();
+        Stream stream = client.OpenRead(imageUrl);
+        Bitmap bitmap;  bitmap = new Bitmap(stream);
 
-    //protected void deleteImage(object sender, EventArgs e)
-    //{
-        //Retrieve Image from Database -- May have to do this by retrieving username/password etc
-        //Remove image from Database
-        //Close connection to Database
+        if (bitmap != null) 
+            bitmap.Save(filename, imgFormat);
 
-       // SqlConnection connection = new SqlConnection();
-        //try {
-        //connection.Open();
-       // SqlCommand command = new SqlCommand("SELECT Picture FROM Images WHERE username=''" /*username*/);
-        //SqlDataReader reader = new command.ExecuteReader();
-            
-        //} 
-
- 
-    //}
+        stream.Flush();
+        stream.Close();
+        client.Dispose();
+    }
+     */
 }

@@ -9,6 +9,10 @@ using System.Web.Providers.Entities;
 
 public partial class Default2 : System.Web.UI.Page
 {
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        txtUsername.Focus();
+    }
     public bool IsValid(char value)
     {
         if (value >= 48 && value <= 57)
@@ -21,7 +25,6 @@ public partial class Default2 : System.Web.UI.Page
             return true; // space and period.
         return false;
     }
-
     protected void submit(object sender, EventArgs e)
     {
         string password = txtPassword.Text;
@@ -50,7 +53,7 @@ public partial class Default2 : System.Web.UI.Page
             // and redirect the user to the protected area of your website.
             loginresult.Text = string.Format("You are userId : {0}", userId);
             Session["userId"] = userId;
-            Response.Redirect("ViewPictures.aspx" + Session["UserID"]);
+            Response.Redirect("ViewPictures.aspx");
         }
         else
         {

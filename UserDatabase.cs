@@ -10,7 +10,7 @@ using System.Web;
 /// </summary>
 public class UserDatabase
 {
-    private static string connectionstring = "Data Source=localhost;Initial Catalog=PhotoSecDatabase;Integrated Security=True";
+    private static string connectionstring = "Data Source=BRETTSPC\\SQLEXPRESS;Initial Catalog=PhotoSec;Integrated Security=True";
 
     public static bool AddUser(string username, string password)
     {
@@ -19,7 +19,7 @@ public class UserDatabase
 
         SqlConnection con = new SqlConnection(connectionstring);
         string hashedPassword = Hashing.HashSHA256(password + userGuid.ToString());
-        using (SqlCommand sqlCommand = new SqlCommand("SELECT * from [User] where username like @username AND password like @password", con))
+        using (SqlCommand sqlCommand = new SqlCommand("SELECT * from [Users] where userName like @userName AND password like @password", con))
         {
             sqlCommand.Parameters.AddWithValue("@username", username);
             sqlCommand.Parameters.AddWithValue("@password", hashedPassword);
@@ -28,7 +28,7 @@ public class UserDatabase
             while (userCount.Read())
             {
                 char[] charsToTrim = { '*', ' ', '\'' };
-                string dbUserNameCheck = Convert.ToString(userCount["Username"]);
+                string dbUserNameCheck = Convert.ToString(userCount["UserName"]);
                 if (dbUserNameCheck == username)
                 {
                     check = true;
@@ -43,7 +43,7 @@ public class UserDatabase
             check = false;
             con.Close();
         }
-        using (SqlCommand cmd = new SqlCommand("INSERT INTO [User] VALUES (@username, @password, @UserGuid)", con))
+        using (SqlCommand cmd = new SqlCommand("INSERT INTO [Users] VALUES (@username, @password, @UserGuid)", con))
         {
             // Add the input as parameters to avoid sql-injections
             cmd.Parameters.AddWithValue("@username", username);
@@ -56,13 +56,14 @@ public class UserDatabase
         }
         return true;
     }
+
     public static int GetUserIdByUsernameAndPassword(string username, string password)
     {
         int userId = 0;
         // this is the value we will return
 
         SqlConnection con = new SqlConnection(connectionstring);
-        using (SqlCommand cmd = new SqlCommand("SELECT UserId, Password, UserGuid FROM [User] WHERE username=@username", con))
+        using (SqlCommand cmd = new SqlCommand("SELECT UserId, Password, UserGuid FROM [Users] WHERE username=@username", con))
         {
             cmd.Parameters.AddWithValue("@username", username);
             con.Open();

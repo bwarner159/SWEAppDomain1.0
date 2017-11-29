@@ -13,16 +13,18 @@
     </div>
     <div style="display:inline-block">
         <h1>Your Pictures</h1>
+        </br>
     </div>
+        
     <div>
         <asp:Button runat="server" ID="goToUploadPg" Text="Go to Upload Page" OnClick="GoToUpload"/>
+        </br>
     </div>
     <div>
-        <asp:Image runat="server" ID="Id1" ImageUrl="ViewPictures.aspx.cs?Id=1"/>
-        <asp:Image runat="server" ID="Id2" ImageUrl="ViewPictures.aspx.cs?Id=2"/>
-        <asp:Image runat="server" ID="Id3" ImageUrl="ViewPictures.aspx.cs?Id=3"/>
-        <asp:Image runat="server" ID="Id4" ImageUrl="ViewPictures.aspx.cs?Id=4"/>
-        <asp:Image runat="server" ID="Id5" ImageUrl="ViewPictures.aspx.cs?Id=5"/>
+        <asp:Button ID="ViewPicturesButton" runat="server" OnClick="viewPicturesButton"/>
+    </div>
+    <div>
+        <asp:Image runat="server" ID="Id1" ImageUrl="ImageHandler.ashx?Id={1}"/>
 	</div>
     </form>
 </body>
