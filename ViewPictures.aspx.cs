@@ -39,8 +39,9 @@ public partial class _Default : System.Web.UI.Page
                 {
 
                     System.Web.UI.WebControls.Image dbImages = new System.Web.UI.WebControls.Image();
+                   // byte[] imgFromDB = 
 
-                    dbImages.ImageUrl = string.Format("ImageHandler.ashx?Id={1}", dr.GetInt32(0));
+                   // dbImages.ImageUrl = string.Format("ImageHandler.ashx?Id={1}", dr.GetInt32(0));
 
                     Id1.Controls.Add(dbImages);
                 }
@@ -48,9 +49,30 @@ public partial class _Default : System.Web.UI.Page
             
         }
     }
+    /*
+    public System.Drawing.Image byteArrayToImage(byte[] bytearray)
+    {
+        try
+        {
+            MemoryStream ms = new MemoryStream(bytearray, 0, bytearray.Length);
+            ms.Write(bytearray, 0, bytearray.Length);
+            var returnImage = System.Drawing.Image.FromStream(ms, true);
+        }
+        catch
+        {
+
+        }
+        return returnImage;
+    }
+     */
     protected void Page_Load(object sender, EventArgs e)
     {
         
+    }
+
+    protected void GoToYourPictures(object sender, EventArgs e)
+    {
+        Response.Redirect("YourPictures.aspx");
     }
     
 }
