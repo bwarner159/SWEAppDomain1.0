@@ -6,7 +6,7 @@
 <head runat="server">
     <title>PhotoSec</title>
 </head>
-<body>
+<body style="background:url(C:\Users\bwarner6\Downloads\spirationlight\spiration-light.png)">
     <form id="form1" runat="server">
     <div style="float:left">
         <img src="C:\Users\Brett\Pictures\animatedlock.jpg" width="50" height="50"/>
@@ -17,11 +17,12 @@
     <div>
         <p>Browse File Directory and Submit Picture</p>
         <asp:FileUpload ID="picFile" runat="server" />
+    </div>
+    <div>
         <asp:Button ID="submitPicture" runat="server" Text="Submit" OnClick="submitButton"/>
         <asp:Panel ID="confirmation" runat="server" Visible="false">         
             <asp:Label ID="result" runat="server"></asp:Label>
         </asp:Panel>
-        <asp:Button ID ="goToViewPics" runat="server" Text="Go to View Pictures Page" OnClick="GoToViewPictures"/>
     </div>
     </form>
 </body>

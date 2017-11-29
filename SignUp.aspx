@@ -6,7 +6,7 @@
 <head runat="server">
     <title>PhotoSec</title>
 </head>
-<body>
+<body style="background:url(C:\Users\bwarner6\Downloads\spirationlight\spiration-light.png)">
     <div style="float:left">
         <img src="C:\Users\Brett\Pictures\animatedlock.jpg" width="50" height="50"/>
     </div>
