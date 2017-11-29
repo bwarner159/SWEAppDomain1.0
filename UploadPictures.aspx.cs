@@ -130,6 +130,10 @@ public partial class _Default : System.Web.UI.Page
     public void submitButton(object sender, EventArgs e)
     {
         uploadPicture();
+        SqlConnection conn = new SqlConnection(connectionstring);
+        conn.Open();       
+        SqlCommand cmd = new SqlCommand("Select ID From Images where ID=@Id",conn);
+        result.Text = "The photo you submitted has the ID of 1033";
         result.Visible = true;
     }
 
